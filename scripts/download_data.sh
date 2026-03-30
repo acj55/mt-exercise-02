@@ -20,24 +20,42 @@ done
 
 # download a different interesting data set!
 
-mkdir -p $data/grimm
+mkdir -p $data/fitzgerald
 
-mkdir -p $data/grimm/raw
+mkdir -p $data/fitzgerald/raw
 
-wget https://www.gutenberg.org/files/52521/52521-0.txt
-mv 52521-0.txt $data/grimm/raw/tales.txt
+wget https://gutenberg.org/cache/epub/64317/pg64317.txt
+mv pg64317.txt $data/fitzgerald/raw/gatsby.txt
+
+wget https://gutenberg.org/cache/epub/805/pg805.txt 
+mv pg805.txt $data/fitzgerald/raw/paradise.txt
+
+cat \
+  $data/fitzgerald/raw/gatsby.txt \
+  $data/fitzgerald/raw/paradise.txt \
+  > $data/fitzgerald/raw/all.txt
 
 # preprocess slightly
 
-cat $data/grimm/raw/tales.txt | python $base/scripts/preprocess_raw.py > $data/grimm/raw/tales.cleaned.txt
+cat $data/fitzgerald/raw/all.txt | python $base/scripts/preprocess_raw.py > $data/fitzgerald/raw/all.cleaned.txt
 
 # tokenize, fix vocabulary upper bound
 
-cat $data/grimm/raw/tales.cleaned.txt | python $base/scripts/preprocess.py --vocab-size 5000 --tokenize --lang "en" --sent-tokenize > \
-    $data/grimm/raw/tales.preprocessed.txt
+cat $data/fitzgerald/raw/all.cleaned.txt | python $base/scripts/preprocess.py --vocab-size 5000 --tokenize --lang "en" --sent-tokenize --language "english" > \
+    $data/fitzgerald/raw/all.preprocessed.txt
 
 # split into train, valid and test
 
-head -n 440 $data/grimm/raw/tales.preprocessed.txt | tail -n 400 > $data/grimm/valid.txt
-head -n 840 $data/grimm/raw/tales.preprocessed.txt | tail -n 400 > $data/grimm/test.txt
-tail -n 3075 $data/grimm/raw/tales.preprocessed.txt | head -n 2955 > $data/grimm/train.txt
+
+total=$(wc -l < $data/fitzgerald/raw/all.preprocessed.txt)
+
+train_lines=$(( total * 80 / 100 ))
+valid_lines=$(( total * 10 / 100 ))
+test_lines=$(( total - train_lines - valid_lines ))
+
+head -n $train_lines $data/fitzgerald/raw/all.preprocessed.txt > $data/fitzgerald/train.txt
+
+tail -n +$(( train_lines + 1 )) $data/fitzgerald/raw/all.preprocessed.txt | \
+head -n $valid_lines > $data/fitzgerald/valid.txt
+
+tail -n $test_lines $data/fitzgerald/raw/all.preprocessed.txt > $data/fitzgerald/test.txt
