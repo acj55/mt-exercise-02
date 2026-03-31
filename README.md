@@ -35,15 +35,18 @@ What this does:
         - 10% of lines -> test.txt
 - final segments:
     output from `wc -l data/fitzgerald/[tv]*`:
+    ```text
     679 data/fitzgerald/test.txt
     5422 data/fitzgerald/train.txt
     677 data/fitzgerald/valid.txt
     6778 total
+    ```
 
 ## Training
 
 Before training I adapted the `main.py` from `tools/pytorch-examples/word_language_model` to match my hardware and increase efficiency. This sets the accelerator to using "mps" if applicable. Using GPU instead of CPU reduced the runtime from around 350 seconds to 140 seconds for a training run with 40 epochs.  
 To use this the argument `--accel` must be added to the function call. 
+A copy of `main.py` is added to the `scripts` depository as `main_modified.py`.
 
 Then, I trained the model on my fitzgerald data using the settings of dropout = 0.5 and epochs = 40.
 
@@ -65,10 +68,12 @@ Explanation:
 - Input: called with `--log-file "desired_output_file.tsv"`  
 - Ouput: Each run produces a log file: `logs/dropout_<value>.tsv`
 - Log Format:
+    ```text
     split   epoch   batch   loss   ppl
     train   1       100     ...    ...
     valid   1       end     ...    ...
     test    final   end     ...    ...
+    ``` 
     - Contains:
         - training perplexity (per log interval)
         - validation perplexity (per epoch)
