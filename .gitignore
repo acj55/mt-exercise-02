@@ -1,0 +1,8 @@
+results/*
+
+# but keeps folder
+!results/
+
+# allows only markdown and images
+!results/*.md
+!results/*.png
