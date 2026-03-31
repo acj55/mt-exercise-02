@@ -24,25 +24,25 @@ mkdir -p $data/fitzgerald
 
 mkdir -p $data/fitzgerald/raw
 
-wget https://gutenberg.org/cache/epub/64317/pg64317.txt
-mv pg64317.txt $data/fitzgerald/raw/gatsby.txt
+# wget https://gutenberg.org/cache/epub/64317/pg64317.txt
+# mv pg64317.txt $data/fitzgerald/raw/gatsby.txt
 
-wget https://gutenberg.org/cache/epub/805/pg805.txt 
-mv pg805.txt $data/fitzgerald/raw/paradise.txt
+# wget https://gutenberg.org/cache/epub/805/pg805.txt 
+# mv pg805.txt $data/fitzgerald/raw/paradise.txt
 
-cat \
-  $data/fitzgerald/raw/gatsby.txt \
-  $data/fitzgerald/raw/paradise.txt \
-  > $data/fitzgerald/raw/all.txt
+# cat \
+#   $data/fitzgerald/raw/gatsby.txt \
+#   $data/fitzgerald/raw/paradise.txt \
+#   > $data/fitzgerald/raw/all.txt
 
-# preprocess slightly
+# # preprocess slightly
 
-cat $data/fitzgerald/raw/all.txt | python $base/scripts/preprocess_raw.py > $data/fitzgerald/raw/all.cleaned.txt
+# cat $data/fitzgerald/raw/all.txt | python $base/scripts/preprocess_raw.py > $data/fitzgerald/raw/all.cleaned.txt
 
 # tokenize, fix vocabulary upper bound
 
-cat $data/fitzgerald/raw/all.cleaned.txt | python $base/scripts/preprocess.py --vocab-size 5000 --tokenize --lang "en" --sent-tokenize --language "english" > \
-    $data/fitzgerald/raw/all.preprocessed.txt
+# cat $data/fitzgerald/raw/all.cleaned.txt | python $base/scripts/preprocess.py --vocab-size 7000 --tokenize --lang "en" --sent-tokenize --language "english" > \
+#     $data/fitzgerald/raw/all.preprocessed.txt
 
 # split into train, valid and test
 
